@@ -1,5 +1,5 @@
 {
-  "name": "05-clima-app",
+  "name": "rest-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,10 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jiovanni Romo",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^16.10.2"
+    "@types/node": "^16.10.2",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "typescript": "^4.4.3"
