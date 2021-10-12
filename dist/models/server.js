@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const user_routes_1 = require("../routes/user.routes");
+const user_1 = require("../routes/user");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -26,7 +26,7 @@ class Server {
         this.app.use(express_1.default.static("public"));
     }
     routes() {
-        this.app.use(this.usuariosPath, user_routes_1.router);
+        this.app.use(this.usuariosPath, user_1.router);
     }
 }
 exports.Server = Server;

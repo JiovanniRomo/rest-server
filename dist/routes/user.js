@@ -11,4 +11,4 @@ exports.router.get("/", usuarios_1.usuariosGet);
 exports.router.put("/:id", usuarios_1.usuariosPut);
 exports.router.post("/", usuarios_1.usuariosPost);
 exports.router.delete("/", usuarios_1.usuariosDelete);
-//# sourceMappingURL=user.routes.js.map
+//# sourceMappingURL=user.js.map
