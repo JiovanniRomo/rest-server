@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon dist/app.js"
+    "server": "nodemon dist/app.js",
+    "start": "node dist/app"
   },
   "keywords": [],
   "author": "Jiovanni Romo",
