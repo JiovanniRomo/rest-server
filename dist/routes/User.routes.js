@@ -8,7 +8,7 @@ const express_1 = __importDefault(require("express"));
 const usuarios_1 = require("../controllers/usuarios");
 exports.router = express_1.default.Router();
 exports.router.get("/", usuarios_1.usuariosGet);
-exports.router.put("/", usuarios_1.usuariosPut);
+exports.router.put("/:id", usuarios_1.usuariosPut);
 exports.router.post("/", usuarios_1.usuariosPost);
 exports.router.delete("/", usuarios_1.usuariosDelete);
 //# sourceMappingURL=user.routes.js.map
