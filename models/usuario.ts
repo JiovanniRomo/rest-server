@@ -17,12 +17,12 @@ const UsuarioSchema = new Schema<UserSchema>({
     },
     correo: {
         type: String,
-        require: [true, 'El correo es obligatorio'],
+        required: [true, 'El correo es obligatorio'],
         unique: true
     },
     password: {
         type: String,
-        require: [true, 'El password es obligatorio'],
+        required: [true, 'El password es obligatorio'],
     },
     img: {
         type: String,

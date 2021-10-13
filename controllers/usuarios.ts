@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+const Usuario = require('../models/usuario');
 
 export const usuariosGet = (req: Request, res: Response) => {
     const { q, nombre = 'No name', page = 1, limit = 10 } = req.query;
@@ -12,12 +13,14 @@ export const usuariosGet = (req: Request, res: Response) => {
     });
 };
 
-export const usuariosPost = (req: Request, res: Response) => {
+export const usuariosPost = async (req: Request, res: Response) => {
     const body = req.body;
+    const usuario = new Usuario(body);
+    await usuario.save();
 
     res.json({
         msg: "post API - Controlador",
-        body,
+        usuario,
     });
 };
 
