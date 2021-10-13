@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { router } from "../routes/user";
+import { dbConnection } from "../database/config";
 
 export class Server {
     private app;
@@ -12,6 +13,8 @@ export class Server {
         this.port = process.env.PORT;
         this.usuariosPath = "/api/usuarios";
 
+        //conectar a DB
+        this.conectarDB();
 
         //Middlewares
         this.middlewares();
@@ -26,6 +29,10 @@ export class Server {
                 `Example app listening at http://localhost:${this.port}`
             );
         });
+    }
+
+    private async conectarDB() {
+        await dbConnection();
     }
 
     private middlewares() {
