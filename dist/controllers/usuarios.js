@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuariosDelete = exports.usuariosPut = exports.usuariosPost = exports.usuariosGet = void 0;
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const Usuario = require('../models/usuario');
 const usuariosGet = (req, res) => {
     const { q, nombre = 'No name', page = 1, limit = 10 } = req.query;
@@ -23,8 +27,10 @@ const usuariosGet = (req, res) => {
 };
 exports.usuariosGet = usuariosGet;
 const usuariosPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = req.body;
-    const usuario = new Usuario(body);
+    const { nombre, correo, password, rol } = req.body;
+    const usuario = new Usuario({ nombre, correo, password, rol });
+    const salt = bcryptjs_1.default.genSaltSync();
+    usuario.password = bcryptjs_1.default.hashSync(password, salt);
     yield usuario.save();
     res.json({
         msg: "post API - Controlador",

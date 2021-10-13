@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import bcryptjs from 'bcryptjs';
+import { IUser } from "../models/usuario";
 const Usuario = require('../models/usuario');
 
 export const usuariosGet = (req: Request, res: Response) => {
@@ -14,8 +16,16 @@ export const usuariosGet = (req: Request, res: Response) => {
 };
 
 export const usuariosPost = async (req: Request, res: Response) => {
-    const body = req.body;
-    const usuario = new Usuario(body);
+    const { nombre, correo, password, rol } = req.body;
+
+    const usuario: IUser = new Usuario({nombre, correo, password, rol});
+    //Verificar si el correo existe
+
+    //Hashear password
+    const salt = bcryptjs.genSaltSync();
+    usuario.password = bcryptjs.hashSync( password, salt );
+
+    // Guardar en DB
     await usuario.save();
 
     res.json({
