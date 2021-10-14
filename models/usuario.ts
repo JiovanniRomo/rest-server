@@ -29,7 +29,7 @@ const UsuarioSchema: Schema<IUser> = new Schema({
     },
     rol: {
         type: String,
-        enum: ['ADMIN_ROLE', 'USER_ROLE']
+        enum: ['ADMIN_ROLE', 'USER_ROLE', 'VENTAS_ROLE']
     },
     estado: {
         type: Boolean,

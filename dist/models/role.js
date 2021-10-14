@@ -20,35 +20,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const UsuarioSchema = new mongoose_1.Schema({
-    nombre: {
-        type: String,
-        require: [true, 'El nombre es obligatorio']
-    },
-    correo: {
-        type: String,
-        required: [true, 'El correo es obligatorio'],
-        unique: true
-    },
-    password: {
-        type: String,
-        required: [true, 'El password es obligatorio'],
-    },
-    img: {
-        type: String,
-    },
+const RoleSchema = new mongoose_1.Schema({
     rol: {
         type: String,
-        enum: ['ADMIN_ROLE', 'USER_ROLE', 'VENTAS_ROLE']
-    },
-    estado: {
-        type: Boolean,
-        default: true
-    },
-    google: {
-        type: Boolean,
-        default: false
+        required: [true, 'El rol es obligatorio']
     }
 });
-module.exports = mongoose_1.default.model('Usuario', UsuarioSchema);
-//# sourceMappingURL=usuario.js.map
+module.exports = mongoose_1.default.model('Role', RoleSchema);
+//# sourceMappingURL=role.js.map
