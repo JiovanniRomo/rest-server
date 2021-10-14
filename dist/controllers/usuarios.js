@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuariosDelete = exports.usuariosPut = exports.usuariosPost = exports.usuariosGet = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const express_validator_1 = require("express-validator");
 const Usuario = require('../models/usuario');
 const usuariosGet = (req, res) => {
     const { q, nombre = 'No name', page = 1, limit = 10 } = req.query;
@@ -27,8 +28,18 @@ const usuariosGet = (req, res) => {
 };
 exports.usuariosGet = usuariosGet;
 const usuariosPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors);
+    }
     const { nombre, correo, password, rol } = req.body;
     const usuario = new Usuario({ nombre, correo, password, rol });
+    const correoExiste = yield Usuario.findOne({ correo });
+    if (correoExiste) {
+        return res.status(400).json({
+            msg: 'El correo ya esta registrado'
+        });
+    }
     const salt = bcryptjs_1.default.genSaltSync();
     usuario.password = bcryptjs_1.default.hashSync(password, salt);
     yield usuario.save();

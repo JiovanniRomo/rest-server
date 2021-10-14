@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcryptjs from 'bcryptjs';
 import { IUser } from "../models/usuario";
+import { validationResult } from "express-validator";
 const Usuario = require('../models/usuario');
 
 export const usuariosGet = (req: Request, res: Response) => {
@@ -16,14 +17,28 @@ export const usuariosGet = (req: Request, res: Response) => {
 };
 
 export const usuariosPost = async (req: Request, res: Response) => {
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(400).json(errors);
+    }
+
     const { nombre, correo, password, rol } = req.body;
 
-    const usuario: IUser = new Usuario({nombre, correo, password, rol});
+    const usuario: IUser = new Usuario({ nombre, correo, password, rol });
+
     //Verificar si el correo existe
+    const correoExiste = await Usuario.findOne({ correo });
+    if (correoExiste) {
+        return res.status(400).json({
+            msg: 'El correo ya esta registrado'
+        })
+    }
 
     //Hashear password
     const salt = bcryptjs.genSaltSync();
-    usuario.password = bcryptjs.hashSync( password, salt );
+    usuario.password = bcryptjs.hashSync(password, salt);
 
     // Guardar en DB
     await usuario.save();
