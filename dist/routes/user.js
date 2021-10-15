@@ -18,7 +18,7 @@ exports.router.post("/", [
         .not()
         .isEmpty()
         .isLength({ min: 6 }),
-    (0, express_validator_1.check)("correo", "EL correo no es valido").isEmail().normalizeEmail(),
+    (0, express_validator_1.check)("correo", "EL correo no es valido").isEmail().custom(db_validators_1.existeEmail),
     (0, express_validator_1.check)('rol').custom(db_validators_1.esRoleValido),
     validar_campos_1.validarCampos,
 ], usuarios_1.usuariosPost);

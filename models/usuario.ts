@@ -41,7 +41,10 @@ const UsuarioSchema: Schema<IUser> = new Schema({
     }
 });
 
-UsuarioSchema.methods.toJSON = function() {
+UsuarioSchema.methods.toJSON = function () {
+
+    //this.toOBject is a mongoose method that convert the model to a JS common object so we
+    // could use his methods or properties related to an object
     const { __v, password, ...usuario } = this.toObject();
     return usuario;
 }

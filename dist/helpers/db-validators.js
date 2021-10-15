@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.esRoleValido = void 0;
+exports.existeEmail = exports.esRoleValido = void 0;
 const Role = require('../models/role');
+const Usuario = require('../models/usuario');
 const esRoleValido = (rol = '') => __awaiter(void 0, void 0, void 0, function* () {
     const existeRol = yield Role.findOne({ rol });
     if (!existeRol) {
@@ -18,4 +19,11 @@ const esRoleValido = (rol = '') => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.esRoleValido = esRoleValido;
+const existeEmail = (correo) => __awaiter(void 0, void 0, void 0, function* () {
+    const correoExiste = yield Usuario.findOne({ correo });
+    if (correoExiste) {
+        throw new Error(`El correo ${correo} ya ha sido registrado en la DB. Intente con algun otro`);
+    }
+});
+exports.existeEmail = existeEmail;
 //# sourceMappingURL=db-validators.js.map

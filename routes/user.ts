@@ -6,7 +6,7 @@ import {
     usuariosPost,
     usuariosPut,
 } from "../controllers/usuarios";
-import { esRoleValido } from "../helpers/db-validators";
+import { esRoleValido, existeEmail } from "../helpers/db-validators";
 import { validarCampos } from "../middlewares/validar-campos";
 
 export const router = express.Router();
@@ -23,9 +23,9 @@ router.post(
             .not()
             .isEmpty()
             .isLength({ min: 6 }),
-        check("correo", "EL correo no es valido").isEmail().normalizeEmail(),
+        check("correo", "EL correo no es valido").isEmail().custom(existeEmail),
         // check("rol", "No es un rol permitido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
-        check('rol').custom( esRoleValido ),
+        check('rol').custom(esRoleValido),
         validarCampos,
     ],
     usuariosPost

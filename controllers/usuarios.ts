@@ -21,14 +21,6 @@ export const usuariosPost = async (req: Request, res: Response) => {
 
     const usuario: IUser = new Usuario({ nombre, correo, password, rol });
 
-    //Verificar si el correo existe
-    const correoExiste = await Usuario.findOne({ correo });
-    if (correoExiste) {
-        return res.status(400).json({
-            msg: 'El correo ya esta registrado'
-        })
-    }
-
     //Hashear password
     const salt = bcryptjs.genSaltSync();
     usuario.password = bcryptjs.hashSync(password, salt);
