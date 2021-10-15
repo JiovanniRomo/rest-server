@@ -6,8 +6,8 @@ import {
     usuariosPost,
     usuariosPut,
 } from "../controllers/usuarios";
+import { esRoleValido } from "../helpers/db-validators";
 import { validarCampos } from "../middlewares/validar-campos";
-const Role = require('../models/role');
 
 export const router = express.Router();
 
@@ -25,13 +25,7 @@ router.post(
             .isLength({ min: 6 }),
         check("correo", "EL correo no es valido").isEmail().normalizeEmail(),
         // check("rol", "No es un rol permitido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
-        check('rol').custom( async (rol = '') => {
-            const existeRol = await Role.findOne({ rol });
-
-            if(!existeRol) {
-                throw new Error(` EL rol ${ rol } no esta registrado en la DB`)
-            }
-        }),
+        check('rol').custom( esRoleValido ),
         validarCampos,
     ],
     usuariosPost
