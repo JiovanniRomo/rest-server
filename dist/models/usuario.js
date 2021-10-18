@@ -29,8 +29,12 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const UsuarioSchema = new mongoose_1.Schema({
     nombre: {
         type: String,
@@ -64,6 +68,10 @@ const UsuarioSchema = new mongoose_1.Schema({
 UsuarioSchema.methods.toJSON = function () {
     const _a = this.toObject(), { __v, password } = _a, usuario = __rest(_a, ["__v", "password"]);
     return usuario;
+};
+UsuarioSchema.methods.encriptarPassword = function (password) {
+    const salt = bcryptjs_1.default.genSaltSync();
+    return this.password = bcryptjs_1.default.hashSync(password, salt);
 };
 module.exports = mongoose_1.default.model('Usuario', UsuarioSchema);
 //# sourceMappingURL=usuario.js.map

@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import bcryptjs from 'bcryptjs';
 
 export interface IUser extends Document {
     nombre: string,
@@ -7,7 +8,8 @@ export interface IUser extends Document {
     img?: string,
     rol: string,
     estado: boolean,
-    google: boolean
+    google: boolean,
+    encriptarPassword(password: string): string;
 }
 
 const UsuarioSchema: Schema<IUser> = new Schema({
@@ -47,6 +49,11 @@ UsuarioSchema.methods.toJSON = function () {
     // could use his methods or properties related to an object
     const { __v, password, ...usuario } = this.toObject();
     return usuario;
+}
+
+UsuarioSchema.methods.encriptarPassword = function(password: string): string {
+    const salt = bcryptjs.genSaltSync();
+    return this.password =  bcryptjs.hashSync(password, salt);
 }
 
 

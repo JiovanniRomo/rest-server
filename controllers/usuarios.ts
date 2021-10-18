@@ -22,8 +22,7 @@ export const usuariosPost = async (req: Request, res: Response) => {
     const usuario: IUser = new Usuario({ nombre, correo, password, rol });
 
     //Hashear password
-    const salt = bcryptjs.genSaltSync();
-    usuario.password = bcryptjs.hashSync(password, salt);
+    usuario.encriptarPassword(password);
 
     // Guardar en DB
     await usuario.save();
@@ -34,12 +33,22 @@ export const usuariosPost = async (req: Request, res: Response) => {
     });
 };
 
-export const usuariosPut = (req: Request, res: Response) => {
+export const usuariosPut = async (req: Request, res: Response) => {
     const { id } = req.params;
+    const { password, google, correo, ...rest } = req.body;
+
+    // TODO: validar cotra BD
+    if (password) {
+        const salt = bcryptjs.genSaltSync();
+        rest.password = bcryptjs.hashSync(password, salt);
+    }
+
+    // { new: true } means that mongoose has to return the updated document, NOT the original one
+    const usuario = await Usuario.findByIdAndUpdate(id, rest, { new: true });
 
     res.json({
         msg: "put API - Controlador",
-        id,
+        usuario,
     });
 };
 
