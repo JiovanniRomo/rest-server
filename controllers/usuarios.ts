@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
-import bcryptjs from 'bcryptjs';
+import bcryptjs from "bcryptjs";
 import { IUser } from "../models/usuario";
-const Usuario = require('../models/usuario');
+import { Model } from "mongoose";
+const Usuario: Model<IUser> = require("../models/usuario");
 
 export const usuariosGet = (req: Request, res: Response) => {
-    const { q, nombre = 'No name', page = 1, limit = 10 } = req.query;
+    const { q, nombre = "No name", page = 1, limit = 10 } = req.query;
 
     res.json({
         msg: "get API - Controlador",
         q,
         nombre,
         page,
-        limit
+        limit,
     });
 };
 
 export const usuariosPost = async (req: Request, res: Response) => {
-
     const { nombre, correo, password, rol } = req.body;
 
     const usuario: IUser = new Usuario({ nombre, correo, password, rol });
@@ -35,7 +35,9 @@ export const usuariosPost = async (req: Request, res: Response) => {
 
 export const usuariosPut = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { password, google, correo, ...rest } = req.body;
+
+    //Extract the _id to not be able to change it!
+    const { _id, password, google, correo, ...rest } = req.body;
 
     // TODO: validar cotra BD
     if (password) {

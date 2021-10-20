@@ -25,15 +25,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuariosDelete = exports.usuariosPut = exports.usuariosPost = exports.usuariosGet = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const Usuario = require('../models/usuario');
+const Usuario = require("../models/usuario");
 const usuariosGet = (req, res) => {
-    const { q, nombre = 'No name', page = 1, limit = 10 } = req.query;
+    const { q, nombre = "No name", page = 1, limit = 10 } = req.query;
     res.json({
         msg: "get API - Controlador",
         q,
         nombre,
         page,
-        limit
+        limit,
     });
 };
 exports.usuariosGet = usuariosGet;
@@ -50,7 +50,7 @@ const usuariosPost = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.usuariosPost = usuariosPost;
 const usuariosPut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const _a = req.body, { password, google, correo } = _a, rest = __rest(_a, ["password", "google", "correo"]);
+    const _a = req.body, { _id, password, google, correo } = _a, rest = __rest(_a, ["_id", "password", "google", "correo"]);
     if (password) {
         const salt = bcryptjs_1.default.genSaltSync();
         rest.password = bcryptjs_1.default.hashSync(password, salt);
