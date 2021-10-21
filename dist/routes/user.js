@@ -10,26 +10,30 @@ const usuarios_1 = require("../controllers/usuarios");
 const db_validators_1 = require("../helpers/db-validators");
 const validar_campos_1 = require("../middlewares/validar-campos");
 exports.router = express_1.default.Router();
-exports.router.get("/", usuarios_1.usuariosGet);
-exports.router.put("/:id", [
-    (0, express_validator_1.check)("id", "No es un id valido").isMongoId(),
-    (0, express_validator_1.check)("id").custom(db_validators_1.existeUsuarioPorId),
-    (0, express_validator_1.check)("rol").custom(db_validators_1.esRoleValido),
+exports.router.get('/', usuarios_1.usuariosGet);
+exports.router.put('/:id', [
+    (0, express_validator_1.check)('id', 'No es un id valido').isMongoId(),
+    (0, express_validator_1.check)('id').custom(db_validators_1.existeUsuarioPorId),
+    (0, express_validator_1.check)('rol').custom(db_validators_1.esRoleValido),
     validar_campos_1.validarCampos,
 ], usuarios_1.usuariosPut);
-exports.router.post("/", [
-    (0, express_validator_1.check)("nombre", "EL nombre es obligatorio")
+exports.router.post('/', [
+    (0, express_validator_1.check)('nombre', 'EL nombre es obligatorio')
         .not()
         .isEmpty()
         .trim()
         .escape(),
-    (0, express_validator_1.check)("password", "La password es obligatoria y con mas de 6 caracteres")
+    (0, express_validator_1.check)('password', 'La password es obligatoria y con mas de 6 caracteres')
         .not()
         .isEmpty()
         .isLength({ min: 6 }),
-    (0, express_validator_1.check)("correo", "EL correo no es valido").isEmail().custom(db_validators_1.existeEmail),
-    (0, express_validator_1.check)("rol").custom(db_validators_1.esRoleValido),
+    (0, express_validator_1.check)('correo', 'EL correo no es valido').isEmail().custom(db_validators_1.existeEmail),
+    (0, express_validator_1.check)('rol').custom(db_validators_1.esRoleValido),
     validar_campos_1.validarCampos,
 ], usuarios_1.usuariosPost);
-exports.router.delete("/", usuarios_1.usuariosDelete);
+exports.router.delete('/:id', [
+    (0, express_validator_1.check)('id', 'No es un id valido').isMongoId(),
+    (0, express_validator_1.check)('id').custom(db_validators_1.existeUsuarioPorId),
+    validar_campos_1.validarCampos,
+], usuarios_1.usuariosDelete);
 //# sourceMappingURL=user.js.map

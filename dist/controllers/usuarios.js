@@ -25,17 +25,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuariosDelete = exports.usuariosPut = exports.usuariosPost = exports.usuariosGet = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const Usuario = require("../models/usuario");
-const usuariosGet = (req, res) => {
-    const { q, nombre = "No name", page = 1, limit = 10 } = req.query;
+const Usuario = require('../models/usuario');
+const usuariosGet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { limite = 5, desde = 0 } = req.query;
+    const query = { estado: true };
+    const [total, usuarios] = yield Promise.all([
+        Usuario.countDocuments(query),
+        Usuario.find(query).skip(Number(desde)).limit(Number(limite)),
+    ]);
     res.json({
-        msg: "get API - Controlador",
-        q,
-        nombre,
-        page,
-        limit,
+        total,
+        usuarios,
     });
-};
+});
 exports.usuariosGet = usuariosGet;
 const usuariosPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nombre, correo, password, rol } = req.body;
@@ -43,7 +45,7 @@ const usuariosPost = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     usuario.encriptarPassword(password);
     yield usuario.save();
     res.json({
-        msg: "post API - Controlador",
+        msg: 'post API - Controlador',
         usuario,
     });
 });
@@ -57,15 +59,17 @@ const usuariosPut = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     const usuario = yield Usuario.findByIdAndUpdate(id, rest, { new: true });
     res.json({
-        msg: "put API - Controlador",
+        msg: 'put API - Controlador',
         usuario,
     });
 });
 exports.usuariosPut = usuariosPut;
-const usuariosDelete = (req, res) => {
+const usuariosDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const usuario = yield Usuario.findByIdAndUpdate(id, { estado: false }, { new: true });
     res.json({
-        msg: "delete API - Controlador",
+        usuario,
     });
-};
+});
 exports.usuariosDelete = usuariosDelete;
 //# sourceMappingURL=usuarios.js.map

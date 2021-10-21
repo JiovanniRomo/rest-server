@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.existeUsuarioPorId = exports.existeEmail = exports.esRoleValido = void 0;
-const Role = require("../models/role");
-const Usuario = require("../models/usuario");
-const esRoleValido = (rol = "") => __awaiter(void 0, void 0, void 0, function* () {
+const Role = require('../models/role');
+const Usuario = require('../models/usuario');
+const esRoleValido = (rol = '') => __awaiter(void 0, void 0, void 0, function* () {
     const existeRol = yield Role.findOne({ rol });
     if (!existeRol) {
         throw new Error(` EL rol ${rol} no esta registrado en la DB`);
@@ -27,7 +27,7 @@ const existeEmail = (correo) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.existeEmail = existeEmail;
 const existeUsuarioPorId = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const existeUsuario = yield Usuario.findById({ id });
+    const existeUsuario = yield Usuario.findById(id);
     if (!existeUsuario) {
         throw new Error(`El id ${id} id no esta registrado. Intente con algun otro`);
     }
