@@ -1,17 +1,20 @@
-import express from "express";
-import cors from "cors";
-import { router } from "../routes/user";
-import { dbConnection } from "../database/config";
+import express from 'express';
+import cors from 'cors';
+import { router } from '../routes/user';
+import { dbConnection } from '../database/config';
+import { authRouter } from '../routes/auth';
 
 export class Server {
     private app;
     private port;
     private usuariosPath: string;
+    private authPath: string;
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
-        this.usuariosPath = "/api/usuarios";
+        this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
 
         //conectar a DB
         this.conectarDB();
@@ -43,10 +46,11 @@ export class Server {
         this.app.use(express.json());
 
         // Directorio publico
-        this.app.use(express.static("public"));
+        this.app.use(express.static('public'));
     }
 
     private routes() {
         this.app.use(this.usuariosPath, router);
+        this.app.use(this.authPath, authRouter)
     }
 }

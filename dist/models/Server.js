@@ -17,11 +17,13 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const user_1 = require("../routes/user");
 const config_1 = require("../database/config");
+const auth_1 = require("../routes/auth");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
         this.port = process.env.PORT;
-        this.usuariosPath = "/api/usuarios";
+        this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
         this.conectarDB();
         this.middlewares();
         this.routes();
@@ -39,10 +41,11 @@ class Server {
     middlewares() {
         this.app.use((0, cors_1.default)());
         this.app.use(express_1.default.json());
-        this.app.use(express_1.default.static("public"));
+        this.app.use(express_1.default.static('public'));
     }
     routes() {
         this.app.use(this.usuariosPath, user_1.router);
+        this.app.use(this.authPath, auth_1.authRouter);
     }
 }
 exports.Server = Server;
