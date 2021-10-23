@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { Model } from 'mongoose';
 import { IUser } from '../models/usuario';
-import bcrypt from 'bcryptjs';
 import { generarJWT } from '../helpers/generar-jwt';
+import bcrypt from 'bcryptjs';
 const Usuario: Model<IUser> = require('../models/usuario');
 
 export const login = async (req: Request, res: Response) => {
