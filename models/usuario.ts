@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 import bcryptjs from 'bcryptjs';
 
 export interface IUser extends Document {
+    uid?: string,
     nombre: string,
     correo: string,
     password: string,
@@ -47,7 +48,8 @@ UsuarioSchema.methods.toJSON = function () {
 
     //this.toOBject is a mongoose method that convert the model to a JS common object so we
     // could use his methods or properties related to an object
-    const { __v, password, ...usuario } = this.toObject();
+    let { __v ,password, _id ,...usuario } = this.toObject();
+    usuario.uid = _id;
     return usuario;
 }
 

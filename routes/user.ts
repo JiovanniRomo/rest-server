@@ -12,6 +12,7 @@ import {
     existeUsuarioPorId,
 } from '../helpers/db-validators';
 import { validarCampos } from '../middlewares/validar-campos';
+import { validarJWT } from '../middlewares/validar-jsonwebtoken';
 
 export const router = express.Router();
 
@@ -52,6 +53,7 @@ router.post(
 );
 
 router.delete('/:id', [
+    validarJWT,
     check('id', 'No es un id valido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
     validarCampos,

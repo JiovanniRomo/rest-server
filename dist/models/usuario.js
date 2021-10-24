@@ -66,7 +66,8 @@ const UsuarioSchema = new mongoose_1.Schema({
     }
 });
 UsuarioSchema.methods.toJSON = function () {
-    const _a = this.toObject(), { __v, password } = _a, usuario = __rest(_a, ["__v", "password"]);
+    let _a = this.toObject(), { __v, password, _id } = _a, usuario = __rest(_a, ["__v", "password", "_id"]);
+    usuario.uid = _id;
     return usuario;
 };
 UsuarioSchema.methods.encriptarPassword = function (password) {
