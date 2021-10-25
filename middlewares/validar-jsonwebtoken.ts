@@ -1,35 +1,51 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Model } from 'mongoose';
+import { IUser } from '../models/usuario';
+const Usuario: Model<IUser> = require('../models/usuario');
 
-interface payload {
-    uid: string
+interface payload extends JwtPayload {
+    uid: string;
 }
 
-export const validarJWT = (req: Request, res: Response, next: NextFunction) => {
-
+export const validarJWT = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const token = req.header('x-token');
 
-    if(!token) {
+    if (!token) {
         return res.status(401).json({
-            msg: 'No se ha proporcionado un token de acceso'
-        })
+            msg: 'No se ha proporcionado un token de acceso',
+        });
     }
 
     try {
-
         const { uid } = jwt.verify(token, process.env.SECRETKEY!) as payload;
-        
-        req.uid = uid;
+
+        // leer el usuario correspondiente
+        const usuario = await Usuario.findById(uid);
+
+        if(!usuario) {
+            return res.status(401).json({
+                msg: 'Token no valido - el usuario no existe'
+            })
+        }
+
+        if(!usuario?.estado) {
+            return res.status(401).json({
+                msg: 'Token no valido - usuario con estado eliminado'
+            })
+        }
+
+        req.usuario = usuario;
 
         next();
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(401).json({
-            msg: 'Token no valido'
-        })
+            msg: 'Token no valido',
+        });
     }
-
-    console.log(token);
-
-    next();
-}
+};

@@ -61,10 +61,7 @@ export const usuariosPut = async (req: Request, res: Response) => {
 export const usuariosDelete = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const uid = req.uid;
-
-    //eliminar fisicamente
-    // const usuario = await Usuario.findByIdAndDelete(id);
+    const usuarioAutenticado = req.usuario;
 
     const usuario = await Usuario.findByIdAndUpdate(
         id,
@@ -74,6 +71,6 @@ export const usuariosDelete = async (req: Request, res: Response) => {
 
     res.json({
         usuario,
-        uid
+        usuarioAutenticado
     });
 };

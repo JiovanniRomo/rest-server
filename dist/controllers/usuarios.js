@@ -66,11 +66,11 @@ const usuariosPut = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.usuariosPut = usuariosPut;
 const usuariosDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const uid = req.uid;
+    const usuarioAutenticado = req.usuario;
     const usuario = yield Usuario.findByIdAndUpdate(id, { estado: false }, { new: true });
     res.json({
         usuario,
-        uid
+        usuarioAutenticado
     });
 });
 exports.usuariosDelete = usuariosDelete;
