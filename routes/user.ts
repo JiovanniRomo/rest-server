@@ -11,8 +11,8 @@ import {
     existeEmail,
     existeUsuarioPorId,
 } from '../helpers/db-validators';
-import { validarCampos } from '../middlewares/validar-campos';
-import { validarJWT } from '../middlewares/validar-jsonwebtoken';
+import { esAdmin, tieneUnRole, validaCampos, validaJWT } from '../middlewares';
+
 
 export const router = express.Router();
 
@@ -24,7 +24,7 @@ router.put(
         check('id', 'No es un id valido').isMongoId(),
         check('id').custom(existeUsuarioPorId),
         check('rol').custom(esRoleValido),
-        validarCampos,
+        validaCampos,
     ],
     usuariosPut
 );
@@ -47,14 +47,16 @@ router.post(
         check('correo', 'EL correo no es valido').isEmail().custom(existeEmail),
         // check("rol", "No es un rol permitido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
         check('rol').custom(esRoleValido),
-        validarCampos,
+        validaCampos,
     ],
     usuariosPost
 );
 
 router.delete('/:id', [
-    validarJWT,
+    validaJWT,
+    tieneUnRole('ADMIN_ROLE', 'VENTAS_ROLE', 'USER_ROLE'),
+    // esAdmin,
     check('id', 'No es un id valido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
-    validarCampos,
+    validaCampos,
 ] ,usuariosDelete);
