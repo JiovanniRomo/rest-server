@@ -61,8 +61,6 @@ export const usuariosPut = async (req: Request, res: Response) => {
 export const usuariosDelete = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const usuarioAutenticado = req.usuario;
-
     const usuario = await Usuario.findByIdAndUpdate(
         id,
         { estado: false },
@@ -71,6 +69,5 @@ export const usuariosDelete = async (req: Request, res: Response) => {
 
     res.json({
         usuario,
-        usuarioAutenticado
     });
 };
