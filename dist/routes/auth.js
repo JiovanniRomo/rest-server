@@ -14,4 +14,8 @@ exports.authRouter.post('/login', [
     (0, express_validator_1.check)('password', 'La passsword es obligatoria').not().isEmpty(),
     validar_campos_1.validarCampos
 ], auth_1.login);
+exports.authRouter.post('/google', [
+    (0, express_validator_1.check)('id_token', 'El id token es requerido').not().isEmpty(),
+    validar_campos_1.validarCampos
+], auth_1.googleSignIn);
 //# sourceMappingURL=auth.js.map

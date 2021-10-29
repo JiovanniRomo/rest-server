@@ -60,3 +60,6 @@ router.delete('/:id', [
     check('id').custom(existeUsuarioPorId),
     validaCampos,
 ] ,usuariosDelete);
+
+
+// router.get('*', )

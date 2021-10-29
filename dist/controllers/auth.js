@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = void 0;
+exports.googleSignIn = exports.login = void 0;
 const generar_jwt_1 = require("../helpers/generar-jwt");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const google_verify_1 = require("../helpers/google-verify");
 const Usuario = require('../models/usuario');
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { correo, password } = req.body;
@@ -39,7 +40,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = yield (0, generar_jwt_1.generarJWT)(usuario.id);
         res.json({
             usuario,
-            token
+            token,
         });
     }
     catch (error) {
@@ -50,4 +51,40 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.login = login;
+const googleSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id_token } = req.body;
+    try {
+        const { nombre, img, correo } = yield (0, google_verify_1.googleVerify)(id_token);
+        let usuario = yield Usuario.findOne({ correo });
+        if (!usuario) {
+            const data = {
+                nombre,
+                correo,
+                password: ':p',
+                img,
+                google: true,
+            };
+            usuario = new Usuario(data);
+            yield usuario.save();
+        }
+        if (!usuario.estado) {
+            res.status(401).json({
+                msg: 'Hable con el administrador: usuario bloqueado',
+            });
+        }
+        const token = yield (0, generar_jwt_1.generarJWT)(usuario.id);
+        res.json({
+            usuario,
+            token
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).json({
+            ok: false,
+            msg: 'El token no es valido',
+        });
+    }
+});
+exports.googleSignIn = googleSignIn;
 //# sourceMappingURL=auth.js.map
