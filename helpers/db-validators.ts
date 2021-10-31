@@ -1,8 +1,10 @@
 import { Model } from 'mongoose';
+import { ICategoria } from '../models/categoria';
 import { IUser } from '../models/usuario';
 
 const Role = require('../models/role');
 const Usuario: Model<IUser> = require('../models/usuario');
+const Categoria: Model<ICategoria> = require('../models/categoria');
 
 export const esRoleValido = async (rol = '') => {
     const existeRol = await Role.findOne({ rol });
@@ -24,7 +26,16 @@ export const existeUsuarioPorId = async (id: string) => {
     const existeUsuario = await Usuario.findById(id);
     if (!existeUsuario) {
         throw new Error(
-            `El id ${id} id no esta registrado. Intente con algun otro`
+            `El id: ${id} id no esta registrado. Intente con algun otro`
+        );
+    }
+};
+
+export const existeUnRegistroId = async (id: string) => {
+    const categoriaDB = await Categoria.findById(id);
+    if (!categoriaDB) {
+        throw new Error(
+            `El id: ${id} no tiene un registro. Intenta con algun otro, por favor`
         );
     }
 };

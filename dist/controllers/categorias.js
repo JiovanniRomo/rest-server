@@ -24,11 +24,19 @@ const categoriasGet = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.categoriasGet = categoriasGet;
-const obtenerCategoriaId = (req, res) => {
+const obtenerCategoriaId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const categoriaSeleccionada = yield Categoria.findById(id);
+    if (!categoriaSeleccionada) {
+        return res.status(404).json({
+            msg: 'No existe la categoria, intenta con otro ID, por favor',
+        });
+    }
     res.json({
+        categoriaSeleccionada,
         msg: 'todo ok - get categoria id',
     });
-};
+});
 exports.obtenerCategoriaId = obtenerCategoriaId;
 const crearCategoria = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const nombre = req.body.nombre.toUpperCase();
@@ -61,10 +69,21 @@ const actualizarRegistroPorId = (req, res) => {
     });
 };
 exports.actualizarRegistroPorId = actualizarRegistroPorId;
-const eliminarCategoria = (req, res) => {
-    res.json({
-        msg: 'todo ok - eliminar categoria',
-    });
-};
+const eliminarCategoria = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const categoriaEliminada = yield Categoria.findByIdAndUpdate(id, { estado: false }, { new: true });
+        res.json({
+            categoriaEliminada,
+            msg: 'todo ok - eliminar categoria',
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).json({
+            msg: 'No se que ha salido mal'
+        });
+    }
+});
 exports.eliminarCategoria = eliminarCategoria;
 //# sourceMappingURL=categorias.js.map

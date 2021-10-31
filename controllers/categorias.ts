@@ -18,8 +18,18 @@ export const categoriasGet = async (req: Request, res: Response) => {
     });
 };
 
-export const obtenerCategoriaId = (req: Request, res: Response) => {
+export const obtenerCategoriaId = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const categoriaSeleccionada = await Categoria.findById(id);
+
+    if (!categoriaSeleccionada) {
+        return res.status(404).json({
+            msg: 'No existe la categoria, intenta con otro ID, por favor',
+        });
+    }
+
     res.json({
+        categoriaSeleccionada,
         msg: 'todo ok - get categoria id',
     });
 };
@@ -61,8 +71,24 @@ export const actualizarRegistroPorId = (req: Request, res: Response) => {
     });
 };
 
-export const eliminarCategoria = (req: Request, res: Response) => {
-    res.json({
-        msg: 'todo ok - eliminar categoria',
-    });
+export const eliminarCategoria = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const categoriaEliminada = await Categoria.findByIdAndUpdate(
+            id,
+            { estado: false },
+            { new: true }
+        );
+    
+        res.json({
+            categoriaEliminada,
+            msg: 'todo ok - eliminar categoria',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            msg: 'No se que ha salido mal'
+        });
+    }
 };

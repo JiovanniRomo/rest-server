@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.existeUsuarioPorId = exports.existeEmail = exports.esRoleValido = void 0;
+exports.existeUnRegistroId = exports.existeUsuarioPorId = exports.existeEmail = exports.esRoleValido = void 0;
 const Role = require('../models/role');
 const Usuario = require('../models/usuario');
+const Categoria = require('../models/categoria');
 const esRoleValido = (rol = '') => __awaiter(void 0, void 0, void 0, function* () {
     const existeRol = yield Role.findOne({ rol });
     if (!existeRol) {
@@ -29,8 +30,15 @@ exports.existeEmail = existeEmail;
 const existeUsuarioPorId = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const existeUsuario = yield Usuario.findById(id);
     if (!existeUsuario) {
-        throw new Error(`El id ${id} id no esta registrado. Intente con algun otro`);
+        throw new Error(`El id: ${id} id no esta registrado. Intente con algun otro`);
     }
 });
 exports.existeUsuarioPorId = existeUsuarioPorId;
+const existeUnRegistroId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const categoriaDB = yield Categoria.findById(id);
+    if (!categoriaDB) {
+        throw new Error(`El id: ${id} no tiene un registro. Intenta con algun otro, por favor`);
+    }
+});
+exports.existeUnRegistroId = existeUnRegistroId;
 //# sourceMappingURL=db-validators.js.map
