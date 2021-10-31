@@ -38,6 +38,12 @@ export const obtenerCategoriaId = async (req: Request, res: Response) => {
         });
     }
 
+    if(!categoriaSeleccionada.estado){ 
+        return res.status(404).json({
+            msg: 'La categoria no esta disponible',
+        });
+    }
+
     res.json({
         categoriaSeleccionada,
         msg: 'todo ok - get categoria id',
@@ -80,12 +86,24 @@ export const actualizarRegistroPorId = async (req: Request, res: Response) => {
     const nombreActualizado = req.body.nombre.toUpperCase();
 
     try {
+
+        const categoriaDB = await Categoria.findById(id);
+
+        if(!categoriaDB?.estado){
+            return res.status(400).json({
+                msg: 'La categoria que intenta actualizar ha sido eliminada.'
+            });
+        }
+
         const categoriaActualizada = await Categoria.findByIdAndUpdate(
             id,
             { nombre: nombreActualizado },
             { new: true }
-        );
-
+        )
+        .populate({
+            path: 'usuario'
+        })
+        
         res.json({
             categoriaActualizada,
             msg: 'todo ok - actualizar registro por id',

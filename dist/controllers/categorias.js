@@ -43,6 +43,11 @@ const obtenerCategoriaId = (req, res) => __awaiter(void 0, void 0, void 0, funct
             msg: 'No existe la categoria, intenta con otro ID, por favor',
         });
     }
+    if (!categoriaSeleccionada.estado) {
+        return res.status(404).json({
+            msg: 'La categoria no esta disponible',
+        });
+    }
     res.json({
         categoriaSeleccionada,
         msg: 'todo ok - get categoria id',
@@ -78,7 +83,16 @@ const actualizarRegistroPorId = (req, res) => __awaiter(void 0, void 0, void 0, 
     const { id } = req.params;
     const nombreActualizado = req.body.nombre.toUpperCase();
     try {
-        const categoriaActualizada = yield Categoria.findByIdAndUpdate(id, { nombre: nombreActualizado }, { new: true });
+        const categoriaDB = yield Categoria.findById(id);
+        if (!(categoriaDB === null || categoriaDB === void 0 ? void 0 : categoriaDB.estado)) {
+            return res.status(400).json({
+                msg: 'La categoria que intenta actualizar ha sido eliminada.'
+            });
+        }
+        const categoriaActualizada = yield Categoria.findByIdAndUpdate(id, { nombre: nombreActualizado }, { new: true })
+            .populate({
+            path: 'usuario'
+        });
         res.json({
             categoriaActualizada,
             msg: 'todo ok - actualizar registro por id',
