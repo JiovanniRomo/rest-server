@@ -3,18 +3,27 @@ import cors from 'cors';
 import { router } from '../routes/user';
 import { dbConnection } from '../database/config';
 import { authRouter } from '../routes/auth';
+import { categoriasRouter } from '../routes/categorias';
 
+interface IPaths {
+    auth: string,
+    usuarios: string,
+    categorias: string
+}
 export class Server {
     private app;
     private port;
-    private usuariosPath: string;
-    private authPath: string;
+    private paths: IPaths;
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT;
-        this.usuariosPath = '/api/usuarios';
-        this.authPath = '/api/auth';
+
+        this.paths = {
+            auth: '/api/auth',
+            usuarios: '/api/usuarios',
+            categorias: '/api/categorias'
+        }
 
         //conectar a DB
         this.conectarDB();
@@ -50,7 +59,8 @@ export class Server {
     }
 
     private routes() {
-        this.app.use(this.usuariosPath, router);
-        this.app.use(this.authPath, authRouter)
+        this.app.use(this.paths.usuarios, router);
+        this.app.use(this.paths.auth, authRouter);
+        this.app.use(this.paths.categorias, categoriasRouter);
     }
 }

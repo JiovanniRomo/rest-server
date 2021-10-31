@@ -7,6 +7,7 @@ declare namespace Express {
         rol: string,
         estado: boolean,
         google: boolean
+        _id?: string
     }
     interface Request {
         uid?: string;

@@ -1,0 +1,70 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.eliminarCategoria = exports.actualizarRegistroPorId = exports.crearCategoria = exports.obtenerCategoriaId = exports.categoriasGet = void 0;
+const Categoria = require('../models/categoria');
+const categoriasGet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { desde = 0, limite = 10 } = req.query;
+    const categorias = yield Categoria.countDocuments({ estado: true });
+    const categoriasNombre = yield Categoria.find({ estado: true })
+        .skip(Number(desde))
+        .limit(Number(limite));
+    res.json({
+        msg: 'todo ok',
+        totalCategorias: categorias,
+        categoriasNombre,
+    });
+});
+exports.categoriasGet = categoriasGet;
+const obtenerCategoriaId = (req, res) => {
+    res.json({
+        msg: 'todo ok - get categoria id',
+    });
+};
+exports.obtenerCategoriaId = obtenerCategoriaId;
+const crearCategoria = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const nombre = req.body.nombre.toUpperCase();
+    try {
+        const categoriaDB = yield Categoria.findOne({ nombre });
+        if (categoriaDB) {
+            return res.status(400).json({
+                msg: `La categoria ${categoriaDB.nombre} ya existe`,
+            });
+        }
+        const data = {
+            nombre,
+            usuario: req.usuario ? req.usuario._id : null,
+        };
+        const categoria = new Categoria(data);
+        yield categoria.save();
+        res.status(200).json(categoria);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).json({
+            msg: 'Oh no! Algo ha salido muy mal!',
+        });
+    }
+});
+exports.crearCategoria = crearCategoria;
+const actualizarRegistroPorId = (req, res) => {
+    res.json({
+        msg: 'todo ok - actualizar registro por id',
+    });
+};
+exports.actualizarRegistroPorId = actualizarRegistroPorId;
+const eliminarCategoria = (req, res) => {
+    res.json({
+        msg: 'todo ok - eliminar categoria',
+    });
+};
+exports.eliminarCategoria = eliminarCategoria;
+//# sourceMappingURL=categorias.js.map

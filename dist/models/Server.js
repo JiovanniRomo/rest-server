@@ -18,12 +18,16 @@ const cors_1 = __importDefault(require("cors"));
 const user_1 = require("../routes/user");
 const config_1 = require("../database/config");
 const auth_1 = require("../routes/auth");
+const categorias_1 = require("../routes/categorias");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
         this.port = process.env.PORT;
-        this.usuariosPath = '/api/usuarios';
-        this.authPath = '/api/auth';
+        this.paths = {
+            auth: '/api/auth',
+            usuarios: '/api/usuarios',
+            categorias: '/api/categorias'
+        };
         this.conectarDB();
         this.middlewares();
         this.routes();
@@ -44,8 +48,9 @@ class Server {
         this.app.use(express_1.default.static('public'));
     }
     routes() {
-        this.app.use(this.usuariosPath, user_1.router);
-        this.app.use(this.authPath, auth_1.authRouter);
+        this.app.use(this.paths.usuarios, user_1.router);
+        this.app.use(this.paths.auth, auth_1.authRouter);
+        this.app.use(this.paths.categorias, categorias_1.categoriasRouter);
     }
 }
 exports.Server = Server;
