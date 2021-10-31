@@ -6,21 +6,31 @@ const Categoria: Model<ICategoria> = require('../models/categoria');
 export const categoriasGet = async (req: Request, res: Response) => {
     const { desde = 0, limite = 10 } = req.query;
 
-    const categorias = await Categoria.countDocuments({ estado: true });
-    const categoriasNombre = await Categoria.find({ estado: true })
-        .skip(Number(desde))
-        .limit(Number(limite));
+    try {
+        const categorias = await Categoria.countDocuments({ estado: true });
+        const categoriasNombre = await Categoria.find({ estado: true })
+            .skip(Number(desde))
+            .limit(Number(limite));
 
-    res.json({
-        msg: 'todo ok',
-        totalCategorias: categorias,
-        categoriasNombre,
-    });
+        res.json({
+            msg: 'todo ok',
+            totalCategorias: categorias,
+            categoriasNombre,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            msg: 'Algo paso, por favor intentalo de nuevo',
+        });
+    }
 };
 
 export const obtenerCategoriaId = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const categoriaSeleccionada = await Categoria.findById(id);
+    const categoriaSeleccionada = await Categoria.findById(id).populate({
+        path: 'usuario',
+        select: 'nombre',
+    });
 
     if (!categoriaSeleccionada) {
         return res.status(404).json({
@@ -65,10 +75,27 @@ export const crearCategoria = async (req: Request, res: Response) => {
     }
 };
 
-export const actualizarRegistroPorId = (req: Request, res: Response) => {
-    res.json({
-        msg: 'todo ok - actualizar registro por id',
-    });
+export const actualizarRegistroPorId = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const nombreActualizado = req.body.nombre.toUpperCase();
+
+    try {
+        const categoriaActualizada = await Categoria.findByIdAndUpdate(
+            id,
+            { nombre: nombreActualizado },
+            { new: true }
+        );
+
+        res.json({
+            categoriaActualizada,
+            msg: 'todo ok - actualizar registro por id',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            msg: 'Algo paso! Por favor intentalo de nuevo',
+        });
+    }
 };
 
 export const eliminarCategoria = async (req: Request, res: Response) => {
@@ -80,7 +107,7 @@ export const eliminarCategoria = async (req: Request, res: Response) => {
             { estado: false },
             { new: true }
         );
-    
+
         res.json({
             categoriaEliminada,
             msg: 'todo ok - eliminar categoria',
@@ -88,7 +115,7 @@ export const eliminarCategoria = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error);
         res.status(400).json({
-            msg: 'No se que ha salido mal'
+            msg: 'No se que ha salido mal',
         });
     }
 };

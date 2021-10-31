@@ -13,20 +13,31 @@ exports.eliminarCategoria = exports.actualizarRegistroPorId = exports.crearCateg
 const Categoria = require('../models/categoria');
 const categoriasGet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { desde = 0, limite = 10 } = req.query;
-    const categorias = yield Categoria.countDocuments({ estado: true });
-    const categoriasNombre = yield Categoria.find({ estado: true })
-        .skip(Number(desde))
-        .limit(Number(limite));
-    res.json({
-        msg: 'todo ok',
-        totalCategorias: categorias,
-        categoriasNombre,
-    });
+    try {
+        const categorias = yield Categoria.countDocuments({ estado: true });
+        const categoriasNombre = yield Categoria.find({ estado: true })
+            .skip(Number(desde))
+            .limit(Number(limite));
+        res.json({
+            msg: 'todo ok',
+            totalCategorias: categorias,
+            categoriasNombre,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).json({
+            msg: 'Algo paso, por favor intentalo de nuevo',
+        });
+    }
 });
 exports.categoriasGet = categoriasGet;
 const obtenerCategoriaId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const categoriaSeleccionada = yield Categoria.findById(id);
+    const categoriaSeleccionada = yield Categoria.findById(id).populate({
+        path: 'usuario',
+        select: 'nombre',
+    });
     if (!categoriaSeleccionada) {
         return res.status(404).json({
             msg: 'No existe la categoria, intenta con otro ID, por favor',
@@ -63,11 +74,23 @@ const crearCategoria = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.crearCategoria = crearCategoria;
-const actualizarRegistroPorId = (req, res) => {
-    res.json({
-        msg: 'todo ok - actualizar registro por id',
-    });
-};
+const actualizarRegistroPorId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const nombreActualizado = req.body.nombre.toUpperCase();
+    try {
+        const categoriaActualizada = yield Categoria.findByIdAndUpdate(id, { nombre: nombreActualizado }, { new: true });
+        res.json({
+            categoriaActualizada,
+            msg: 'todo ok - actualizar registro por id',
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).json({
+            msg: 'Algo paso! Por favor intentalo de nuevo',
+        });
+    }
+});
 exports.actualizarRegistroPorId = actualizarRegistroPorId;
 const eliminarCategoria = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
@@ -81,7 +104,7 @@ const eliminarCategoria = (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         console.log(error);
         res.status(400).json({
-            msg: 'No se que ha salido mal'
+            msg: 'No se que ha salido mal',
         });
     }
 });

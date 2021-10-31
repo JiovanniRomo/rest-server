@@ -44,6 +44,8 @@ categoriasRouter.post(
 categoriasRouter.put(
     '/:id',
     [
+        check('id').isMongoId(),
+        check('id').custom(existeUnRegistroId),
         validaJWT,
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
         validaCampos,

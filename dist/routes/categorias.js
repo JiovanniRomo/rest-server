@@ -23,6 +23,8 @@ exports.categoriasRouter.post('/', [
     middlewares_1.validaCampos,
 ], categorias_1.crearCategoria);
 exports.categoriasRouter.put('/:id', [
+    (0, express_validator_1.check)('id').isMongoId(),
+    (0, express_validator_1.check)('id').custom(db_validators_1.existeUnRegistroId),
     middlewares_2.validaJWT,
     (0, express_validator_1.check)('nombre', 'El nombre es obligatorio').not().isEmpty(),
     middlewares_1.validaCampos,
