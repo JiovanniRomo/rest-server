@@ -101,7 +101,8 @@ export const actualizarRegistroPorId = async (req: Request, res: Response) => {
             { new: true }
         )
         .populate({
-            path: 'usuario'
+            path: 'usuario',
+            select: 'nombre',
         })
         
         res.json({

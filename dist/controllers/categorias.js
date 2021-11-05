@@ -91,7 +91,8 @@ const actualizarRegistroPorId = (req, res) => __awaiter(void 0, void 0, void 0, 
         }
         const categoriaActualizada = yield Categoria.findByIdAndUpdate(id, { nombre: nombreActualizado }, { new: true })
             .populate({
-            path: 'usuario'
+            path: 'usuario',
+            select: 'nombre',
         });
         res.json({
             categoriaActualizada,
