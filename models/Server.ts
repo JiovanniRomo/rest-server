@@ -6,9 +6,10 @@ import { authRouter } from '../routes/auth';
 import { categoriasRouter } from '../routes/categorias';
 
 interface IPaths {
-    auth: string,
-    usuarios: string,
-    categorias: string
+    auth: string;
+    usuarios: string;
+    categorias: string;
+    productos: string;
 }
 export class Server {
     private app;
@@ -22,8 +23,9 @@ export class Server {
         this.paths = {
             auth: '/api/auth',
             usuarios: '/api/usuarios',
-            categorias: '/api/categorias'
-        }
+            categorias: '/api/categorias',
+            productos: '/api/productos',
+        };
 
         //conectar a DB
         this.conectarDB();
@@ -62,5 +64,7 @@ export class Server {
         this.app.use(this.paths.usuarios, router);
         this.app.use(this.paths.auth, authRouter);
         this.app.use(this.paths.categorias, categoriasRouter);
+        this.app.use(this.paths.productos, categoriasRouter);
     }
+
 }

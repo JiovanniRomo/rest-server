@@ -49,7 +49,7 @@ export const usuariosPut = async (req: Request, res: Response) => {
         rest.password = bcryptjs.hashSync(password, salt);
     }
 
-    // { new: true } means that mongoose has to return the updated document, NOT the original one
+    // { new: true } is use to tell mongoose that it has to return the updated document, NOT the original one
     const usuario = await Usuario.findByIdAndUpdate(id, rest, { new: true });
 
     res.json({

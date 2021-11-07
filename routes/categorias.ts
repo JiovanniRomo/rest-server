@@ -22,7 +22,7 @@ categoriasRouter.get('/', categoriasGet);
 categoriasRouter.get(
     '/:id',
     [
-        check('id').isMongoId(),
+        check('id', 'El id no es valido').isMongoId(),
         check('id').custom(existeUnRegistroId),
         validaCampos,
     ],

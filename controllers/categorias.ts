@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { ICategoria } from '../models/categoria';
 const Categoria: Model<ICategoria> = require('../models/categoria');
 
@@ -38,7 +38,7 @@ export const obtenerCategoriaId = async (req: Request, res: Response) => {
         });
     }
 
-    if(!categoriaSeleccionada.estado){ 
+    if (!categoriaSeleccionada.estado) {
         return res.status(404).json({
             msg: 'La categoria no esta disponible',
         });
@@ -85,26 +85,26 @@ export const actualizarRegistroPorId = async (req: Request, res: Response) => {
     const { id } = req.params;
     const nombreActualizado = req.body.nombre.toUpperCase();
 
-    try {
+    const usuarioIdActualizando = req.usuario ? req.usuario._id : '';
 
+    try {
         const categoriaDB = await Categoria.findById(id);
 
-        if(!categoriaDB?.estado){
+        if (!categoriaDB?.estado) {
             return res.status(400).json({
-                msg: 'La categoria que intenta actualizar ha sido eliminada.'
+                msg: 'La categoria que intenta actualizar ha sido eliminada.',
             });
         }
 
         const categoriaActualizada = await Categoria.findByIdAndUpdate(
             id,
-            { nombre: nombreActualizado },
+            { nombre: nombreActualizado, usuario: usuarioIdActualizando },
             { new: true }
-        )
-        .populate({
+        ).populate({
             path: 'usuario',
             select: 'nombre',
-        })
-        
+        });
+
         res.json({
             categoriaActualizada,
             msg: 'todo ok - actualizar registro por id',
