@@ -1,10 +1,12 @@
 import { Model } from 'mongoose';
 import { ICategoria } from '../models/categoria';
+import { IProducto } from '../models/producto';
 import { IUser } from '../models/usuario';
 
 const Role = require('../models/role');
 const Usuario: Model<IUser> = require('../models/usuario');
 const Categoria: Model<ICategoria> = require('../models/categoria');
+const Producto: Model<IProducto> = require('../models/producto');
 
 export const esRoleValido = async (rol = '') => {
     const existeRol = await Role.findOne({ rol });
@@ -37,5 +39,25 @@ export const existeUnRegistroId = async (id: string) => {
         throw new Error(
             `El id: ${id} no tiene un registro. Intenta con algun otro, por favor`
         );
+    }
+};
+
+export const existeProductoPorId = async (id: string) => {
+    const productoDB = await Producto.findById(id);
+
+    if(!productoDB) {
+        throw new Error(
+            `El id: ${id} no tiene un registro. Intenta con algun otro, por favor`
+        );
+    }
+}
+
+export const esCategoriaValida = async (categoria: string = '') => {
+    const nombreQuery = categoria.toUpperCase();
+
+    const existeCategoria = await Categoria.findOne({nombre: nombreQuery});
+
+    if (!existeCategoria) {
+        throw new Error(`La categoria: ${nombreQuery} no existe`);
     }
 };

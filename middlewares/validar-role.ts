@@ -14,7 +14,7 @@ export const esAdminRole = (
     const { nombre, rol } = req.usuario;
     if (rol !== 'ADMIN_ROLE') {
         return res.status(401).json({
-            msg: `No se puede ejecutar esta accion! El usuario ${nombre} no es un administrador`,
+            msg: `No se puede ejecutar esta accion! El usuario: ${nombre} no es un administrador`,
         });
     }
 

@@ -4,6 +4,7 @@ import { router } from '../routes/user';
 import { dbConnection } from '../database/config';
 import { authRouter } from '../routes/auth';
 import { categoriasRouter } from '../routes/categorias';
+import { productosRouter } from '../routes/productos';
 
 interface IPaths {
     auth: string;
@@ -64,7 +65,7 @@ export class Server {
         this.app.use(this.paths.usuarios, router);
         this.app.use(this.paths.auth, authRouter);
         this.app.use(this.paths.categorias, categoriasRouter);
-        this.app.use(this.paths.productos, categoriasRouter);
+        this.app.use(this.paths.productos, productosRouter);
     }
 
 }

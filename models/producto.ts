@@ -46,8 +46,8 @@ const ProductoSchema: Schema<IProducto> = new Schema({
 });
 
 ProductoSchema.methods.toJSON = function () {
-    let { __v, estado, ...categoria } = this.toObject();
-    return categoria;
+    let { __v, estado, ...producto } = this.toObject();
+    return producto;
 };
 
 module.exports = mongoose.model<IProducto>('Producto', ProductoSchema);
