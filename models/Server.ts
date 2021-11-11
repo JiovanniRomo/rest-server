@@ -5,12 +5,14 @@ import { dbConnection } from '../database/config';
 import { authRouter } from '../routes/auth';
 import { categoriasRouter } from '../routes/categorias';
 import { productosRouter } from '../routes/productos';
+import { busquedasRouter } from '../routes/busqueda';
 
 interface IPaths {
     auth: string;
-    usuarios: string;
+    buscar: string;
     categorias: string;
     productos: string;
+    usuarios: string;
 }
 export class Server {
     private app;
@@ -23,9 +25,10 @@ export class Server {
 
         this.paths = {
             auth: '/api/auth',
-            usuarios: '/api/usuarios',
+            buscar: '/api/buscar',
             categorias: '/api/categorias',
             productos: '/api/productos',
+            usuarios: '/api/usuarios',
         };
 
         //conectar a DB
@@ -66,6 +69,7 @@ export class Server {
         this.app.use(this.paths.auth, authRouter);
         this.app.use(this.paths.categorias, categoriasRouter);
         this.app.use(this.paths.productos, productosRouter);
+        this.app.use(this.paths.buscar, busquedasRouter);
     }
 
 }

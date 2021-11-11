@@ -18,6 +18,7 @@ export const obtenerProductos = async (req: Request, res: Response) => {
 
     res.json({
         ok: true,
+        "total": productos.length,
         productos,
     });
 };
