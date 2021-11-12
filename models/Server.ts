@@ -6,6 +6,8 @@ import { authRouter } from '../routes/auth';
 import { categoriasRouter } from '../routes/categorias';
 import { productosRouter } from '../routes/productos';
 import { busquedasRouter } from '../routes/busqueda';
+import { uploadsRouter } from '../routes/uploads';
+import fileUpload from 'express-fileupload';
 
 interface IPaths {
     auth: string;
@@ -13,6 +15,7 @@ interface IPaths {
     categorias: string;
     productos: string;
     usuarios: string;
+    upload: string;
 }
 export class Server {
     private app;
@@ -29,6 +32,7 @@ export class Server {
             categorias: '/api/categorias',
             productos: '/api/productos',
             usuarios: '/api/usuarios',
+            upload: '/api/uploads',
         };
 
         //conectar a DB
@@ -62,6 +66,12 @@ export class Server {
 
         // Directorio publico
         this.app.use(express.static('public'));
+
+        //Carga de archivos
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/'
+        }));
     }
 
     private routes() {
@@ -70,6 +80,7 @@ export class Server {
         this.app.use(this.paths.categorias, categoriasRouter);
         this.app.use(this.paths.productos, productosRouter);
         this.app.use(this.paths.buscar, busquedasRouter);
+        this.app.use(this.paths.upload, uploadsRouter);
     }
 
 }

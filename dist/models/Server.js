@@ -21,6 +21,8 @@ const auth_1 = require("../routes/auth");
 const categorias_1 = require("../routes/categorias");
 const productos_1 = require("../routes/productos");
 const busqueda_1 = require("../routes/busqueda");
+const uploads_1 = require("../routes/uploads");
+const express_fileupload_1 = __importDefault(require("express-fileupload"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -31,6 +33,7 @@ class Server {
             categorias: '/api/categorias',
             productos: '/api/productos',
             usuarios: '/api/usuarios',
+            upload: '/api/uploads',
         };
         this.conectarDB();
         this.middlewares();
@@ -50,6 +53,10 @@ class Server {
         this.app.use((0, cors_1.default)());
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.static('public'));
+        this.app.use((0, express_fileupload_1.default)({
+            useTempFiles: true,
+            tempFileDir: '/tmp/'
+        }));
     }
     routes() {
         this.app.use(this.paths.usuarios, user_1.router);
@@ -57,6 +64,7 @@ class Server {
         this.app.use(this.paths.categorias, categorias_1.categoriasRouter);
         this.app.use(this.paths.productos, productos_1.productosRouter);
         this.app.use(this.paths.buscar, busqueda_1.busquedasRouter);
+        this.app.use(this.paths.upload, uploads_1.uploadsRouter);
     }
 }
 exports.Server = Server;
