@@ -1,23 +1,31 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cargarArchivo = void 0;
-const path_1 = __importDefault(require("path"));
-const cargarArchivo = (req, res) => {
-    if (!req.files || Object.keys(req.files).length === 0 || !req.files.archivo) {
+const subir_archivo_1 = require("../helpers/subir-archivo");
+const cargarArchivo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.files ||
+        Object.keys(req.files).length === 0 ||
+        !req.files.archivo) {
         return res.status(400).json({ msg: 'No files were uploaded.' });
     }
-    const archivo = req.files.sampleFile;
-    const uploadPath = path_1.default.resolve(__dirname + '../uploads/' + archivo.name);
-    archivo.mv(uploadPath, (err) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({ err });
-        }
-        res.json({ msg: 'File uploaded to ' + uploadPath });
-    });
-};
+    try {
+        const nombre = yield (0, subir_archivo_1.subirArchivo)(req.files.archivo, undefined, 'imgs');
+        res.json({
+            nombre,
+        });
+    }
+    catch (msg) {
+        res.status(400).json({ msg });
+    }
+});
 exports.cargarArchivo = cargarArchivo;
 //# sourceMappingURL=uploads.js.map
