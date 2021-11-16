@@ -61,3 +61,14 @@ export const esCategoriaValida = async (categoria: string = '') => {
         throw new Error(`La categoria: ${nombreQuery} no existe`);
     }
 };
+
+
+export const coleccionesPermitidas = (coleccion: string, colecciones?: string[]) => {
+
+    const incluida = colecciones?.includes(coleccion);
+    if(!incluida) {
+        throw new Error(`La coleccion: ${coleccion} no esta permitida`);
+    }
+
+    return true;
+}

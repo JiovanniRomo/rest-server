@@ -62,6 +62,9 @@ const ProductoSchema = new mongoose_1.Schema({
         type: Boolean,
         default: true,
     },
+    img: {
+        type: String,
+    }
 });
 ProductoSchema.methods.toJSON = function () {
     let _a = this.toObject(), { __v, estado } = _a, producto = __rest(_a, ["__v", "estado"]);

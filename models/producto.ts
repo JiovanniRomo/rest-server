@@ -8,6 +8,7 @@ export interface IProducto extends Document {
     categoria: Schema.Types.ObjectId;
     descripcion: string;
     disponible: boolean;
+    img: string;
 }
 
 const ProductoSchema: Schema<IProducto> = new Schema({
@@ -43,6 +44,9 @@ const ProductoSchema: Schema<IProducto> = new Schema({
         type: Boolean,
         default: true,
     },
+    img: {
+        type: String,
+    }
 });
 
 ProductoSchema.methods.toJSON = function () {

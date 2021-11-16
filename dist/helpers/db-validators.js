@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.esCategoriaValida = exports.existeProductoPorId = exports.existeUnRegistroId = exports.existeUsuarioPorId = exports.existeEmail = exports.esRoleValido = void 0;
+exports.coleccionesPermitidas = exports.esCategoriaValida = exports.existeProductoPorId = exports.existeUnRegistroId = exports.existeUsuarioPorId = exports.existeEmail = exports.esRoleValido = void 0;
 const Role = require('../models/role');
 const Usuario = require('../models/usuario');
 const Categoria = require('../models/categoria');
@@ -57,4 +57,12 @@ const esCategoriaValida = (categoria = '') => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.esCategoriaValida = esCategoriaValida;
+const coleccionesPermitidas = (coleccion, colecciones) => {
+    const incluida = colecciones === null || colecciones === void 0 ? void 0 : colecciones.includes(coleccion);
+    if (!incluida) {
+        throw new Error(`La coleccion: ${coleccion} no esta permitida`);
+    }
+    return true;
+};
+exports.coleccionesPermitidas = coleccionesPermitidas;
 //# sourceMappingURL=db-validators.js.map
