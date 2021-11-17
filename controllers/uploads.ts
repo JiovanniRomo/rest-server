@@ -8,12 +8,17 @@ import { UploadedFile } from 'express-fileupload';
 const Usuario: Model<IUser> = require('../models/usuario');
 const Producto: Model<IProducto> = require('../models/producto');
 const path = require('path');
-const cloudinary = require('cloudinary').v2;
+// const cloudinary = require('cloudinary').v2;
+import cloudinary from 'cloudinary';
+require('dotenv').config();
 
-cloudinary.config({
+const api_key = process.env.API_KEY;
+const api_secret = process.env.API_SECRET;
+
+cloudinary.v2.config({
     cloud_name: 'dxlflkeah',
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_SECRET,
+    api_key,
+    api_secret,
 });
 
 export const cargarArchivo = async (req: Request, res: Response) => {
@@ -155,7 +160,7 @@ export const subirImagenCloudinary = async (req: Request, res: Response) => {
 
     try {
         const { tempFilePath } = req.files?.archivo as UploadedFile;
-        const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
+        const { secure_url } = await cloudinary.v2.uploader.upload(tempFilePath);
 
         res.json(secure_url);
     } catch (error) {

@@ -18,11 +18,14 @@ const subir_archivo_1 = require("../helpers/subir-archivo");
 const Usuario = require('../models/usuario');
 const Producto = require('../models/producto');
 const path = require('path');
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({
+const cloudinary_1 = __importDefault(require("cloudinary"));
+require('dotenv').config();
+const api_key = process.env.API_KEY;
+const api_secret = process.env.API_SECRET;
+cloudinary_1.default.v2.config({
     cloud_name: 'dxlflkeah',
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_SECRET,
+    api_key,
+    api_secret,
 });
 const cargarArchivo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -136,7 +139,7 @@ const subirImagenCloudinary = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
     try {
         const { tempFilePath } = (_c = req.files) === null || _c === void 0 ? void 0 : _c.archivo;
-        const { secure_url } = yield cloudinary.uploader.upload(tempFilePath);
+        const { secure_url } = yield cloudinary_1.default.v2.uploader.upload(tempFilePath);
         res.json(secure_url);
     }
     catch (error) {
