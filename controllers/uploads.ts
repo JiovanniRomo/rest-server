@@ -1,15 +1,10 @@
 import fs from 'fs';
 import { Request, Response } from 'express';
-import { Model } from 'mongoose';
 import { subirArchivo } from '../helpers/subir-archivo';
-import { IProducto } from '../models/producto';
-import { IUser } from '../models/usuario';
 import { UploadedFile } from 'express-fileupload';
-const Usuario: Model<IUser> = require('../models/usuario');
-const Producto: Model<IProducto> = require('../models/producto');
-const path = require('path');
-// const cloudinary = require('cloudinary').v2;
 import cloudinary from 'cloudinary';
+import { retornarModeloImagenes } from '../helpers/modelo-imagenes';
+const path = require('path');
 require('dotenv').config();
 
 const api_key = process.env.API_KEY;
@@ -37,31 +32,7 @@ export const cargarArchivo = async (req: Request, res: Response) => {
 
 export const actualizarImagen = async (req: Request, res: Response) => {
     const { coleccion, id } = req.params;
-
-    let modelo;
-
-    switch (coleccion) {
-        case 'usuarios':
-            modelo = await Usuario.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el usuario con el identificador: ${id}`,
-                });
-            }
-            break;
-
-        case 'productos':
-            modelo = await Producto.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el producto con identificador: ${id}`,
-                });
-            }
-            break;
-
-        default:
-            res.status(500).json({ msg: 'Se me olvido validar eso' });
-    }
+    let modelo = await retornarModeloImagenes(coleccion, id);
 
     //Limpieza previa de archivos
     if (modelo?.img) {
@@ -86,30 +57,7 @@ export const actualizarImagen = async (req: Request, res: Response) => {
 export const mostrarImagen = async (req: Request, res: Response) => {
     const { coleccion, id } = req.params;
 
-    let modelo;
-
-    switch (coleccion) {
-        case 'usuarios':
-            modelo = await Usuario.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el usuario con el identificador: ${id}`,
-                });
-            }
-            break;
-
-        case 'productos':
-            modelo = await Producto.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el producto con identificador: ${id}`,
-                });
-            }
-            break;
-
-        default:
-            res.status(500).json({ msg: 'Se me olvido validar eso' });
-    }
+    let modelo = await retornarModeloImagenes(coleccion, id);
 
     //Limpieza previa de archivos
     if (modelo?.img) {
@@ -133,36 +81,28 @@ export const mostrarImagen = async (req: Request, res: Response) => {
 export const subirImagenCloudinary = async (req: Request, res: Response) => {
     const { coleccion, id } = req.params;
 
-    let modelo;
-
-    switch (coleccion) {
-        case 'usuarios':
-            modelo = await Usuario.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el usuario con el identificador: ${id}`,
-                });
-            }
-            break;
-
-        case 'productos':
-            modelo = await Producto.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el producto con identificador: ${id}`,
-                });
-            }
-            break;
-
-        default:
-            res.status(500).json({ msg: 'Se me olvido validar eso' });
-    }
+    let modelo = await retornarModeloImagenes(coleccion, id);
 
     try {
+
+        if(modelo?.img) {
+            const nombreArr = modelo?.img.split('/');
+            const nombre = nombreArr[nombreArr.length - 1];
+            const [ public_id ] = nombre.split('.');
+
+            await cloudinary.v2.uploader.destroy(public_id);
+        }
+
         const { tempFilePath } = req.files?.archivo as UploadedFile;
         const { secure_url } = await cloudinary.v2.uploader.upload(tempFilePath);
 
-        res.json(secure_url);
+        if(modelo?.img) {
+            modelo.img = secure_url;
+        }
+
+        await modelo?.save();
+
+        res.json(modelo);
     } catch (error) {
         console.log(error);
     }

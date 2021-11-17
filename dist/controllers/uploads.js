@@ -15,10 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.subirImagenCloudinary = exports.mostrarImagen = exports.actualizarImagen = exports.cargarArchivo = void 0;
 const fs_1 = __importDefault(require("fs"));
 const subir_archivo_1 = require("../helpers/subir-archivo");
-const Usuario = require('../models/usuario');
-const Producto = require('../models/producto');
-const path = require('path');
 const cloudinary_1 = __importDefault(require("cloudinary"));
+const modelo_imagenes_1 = require("../helpers/modelo-imagenes");
+const path = require('path');
 require('dotenv').config();
 const api_key = process.env.API_KEY;
 const api_secret = process.env.API_SECRET;
@@ -44,27 +43,7 @@ exports.cargarArchivo = cargarArchivo;
 const actualizarImagen = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const { coleccion, id } = req.params;
-    let modelo;
-    switch (coleccion) {
-        case 'usuarios':
-            modelo = yield Usuario.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el usuario con el identificador: ${id}`,
-                });
-            }
-            break;
-        case 'productos':
-            modelo = yield Producto.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el producto con identificador: ${id}`,
-                });
-            }
-            break;
-        default:
-            res.status(500).json({ msg: 'Se me olvido validar eso' });
-    }
+    let modelo = yield (0, modelo_imagenes_1.retornarModeloImagenes)(coleccion, id);
     if (modelo === null || modelo === void 0 ? void 0 : modelo.img) {
         const pathImagen = `./uploads/${coleccion}/${modelo === null || modelo === void 0 ? void 0 : modelo.img}`;
         if (fs_1.default.existsSync(pathImagen)) {
@@ -82,27 +61,7 @@ const actualizarImagen = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.actualizarImagen = actualizarImagen;
 const mostrarImagen = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { coleccion, id } = req.params;
-    let modelo;
-    switch (coleccion) {
-        case 'usuarios':
-            modelo = yield Usuario.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el usuario con el identificador: ${id}`,
-                });
-            }
-            break;
-        case 'productos':
-            modelo = yield Producto.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el producto con identificador: ${id}`,
-                });
-            }
-            break;
-        default:
-            res.status(500).json({ msg: 'Se me olvido validar eso' });
-    }
+    let modelo = yield (0, modelo_imagenes_1.retornarModeloImagenes)(coleccion, id);
     if (modelo === null || modelo === void 0 ? void 0 : modelo.img) {
         const pathImagen = path.join(__dirname, '../../uploads', coleccion, modelo === null || modelo === void 0 ? void 0 : modelo.img);
         if (fs_1.default.existsSync(pathImagen)) {
@@ -116,31 +75,21 @@ exports.mostrarImagen = mostrarImagen;
 const subirImagenCloudinary = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c;
     const { coleccion, id } = req.params;
-    let modelo;
-    switch (coleccion) {
-        case 'usuarios':
-            modelo = yield Usuario.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el usuario con el identificador: ${id}`,
-                });
-            }
-            break;
-        case 'productos':
-            modelo = yield Producto.findById(id);
-            if (!modelo || modelo.estado === false) {
-                return res.status(404).json({
-                    msg: `No existe el producto con identificador: ${id}`,
-                });
-            }
-            break;
-        default:
-            res.status(500).json({ msg: 'Se me olvido validar eso' });
-    }
+    let modelo = yield (0, modelo_imagenes_1.retornarModeloImagenes)(coleccion, id);
     try {
+        if (modelo === null || modelo === void 0 ? void 0 : modelo.img) {
+            const nombreArr = modelo === null || modelo === void 0 ? void 0 : modelo.img.split('/');
+            const nombre = nombreArr[nombreArr.length - 1];
+            const [public_id] = nombre.split('.');
+            yield cloudinary_1.default.v2.uploader.destroy(public_id);
+        }
         const { tempFilePath } = (_c = req.files) === null || _c === void 0 ? void 0 : _c.archivo;
         const { secure_url } = yield cloudinary_1.default.v2.uploader.upload(tempFilePath);
-        res.json(secure_url);
+        if (modelo === null || modelo === void 0 ? void 0 : modelo.img) {
+            modelo.img = secure_url;
+        }
+        yield (modelo === null || modelo === void 0 ? void 0 : modelo.save());
+        res.json(modelo);
     }
     catch (error) {
         console.log(error);
