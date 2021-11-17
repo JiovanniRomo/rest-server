@@ -1,1 +1,1 @@
-# Archivo solo para mantener el track en git
+# Archivo solo para mantener el track en git, se recomienda subir imagenes en cloudinary
